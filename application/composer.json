@@ -1,0 +1,41 @@
+{
+    "name": "wyzen/wkhtml2pdf-saas",
+    "description": "Convert HTML to PDF from URL or HTML as SAAS",
+    "authors": [
+        {
+            "name": "WYZEN",
+            "email": "vincent.deverre@wyzengroup.com"
+        }
+    ],
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.0"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.2.0",
+        "php-di/php-di": "^6.3",
+        "ramsey/uuid": "^4.1",
+        "slim/psr7": "^1.3",
+        "slim/slim": "^4.7",
+        "symfony/dotenv": "^4.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5",
+        "squizlabs/php_codesniffer": "^3.6",
+        "symfony/var-dumper": "^4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "start": "php -S 0.0.0.0:8888 -t ./public -c ./php.ini -ddisplay_errors=1",
+        "cleancache": "test -d ./var/cache && rm -rf ./var/cache/*"
+    }
+}

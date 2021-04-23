@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Show cmdline
+echo $0 $*
+
+exit 0

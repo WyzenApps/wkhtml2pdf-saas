@@ -1,0 +1,13 @@
+# IGNORE
+composer.phar
+/vendor/
+/config/*.deb
+/var/cache/*
+/data/*
+*.bkp
+*.log
+*.tmp
+
+# KEEP
+!composer.lock
+!.gitkeep
