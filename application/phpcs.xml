@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<ruleset name="Wyzen PHPCS config">
+    <description>Règles de développement WYZEN</description>
+
+    <!-- <file>app</file> -->
+    <file>src</file>
+    <!-- <file>tests</file> -->
+
+    <arg name="colors"/>
+    <arg value="p"/>
+
+    <rule ref="PSR2">
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine" />
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.NewlineBeforeOpenBrace" />
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
+    </rule>
+
+    <rule ref="PSR12">
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine" />
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine" />
+    </rule>
+
+    <!-- Warn about lines longer than 135 chars, and never error. -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="250"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <!--
+    Alignement des affectations
+ -->
+ <rule ref="Generic.Formatting.MultipleStatementAlignment">
+  <properties>
+   <property name="maxPadding" value="12"/>
+   <property name="ignoreMultiLine" value="true"/>
+  </properties>
+ </rule>
+
+ <rule ref="Generic.PHP.ForbiddenFunctions">
+  <properties>
+   <property name="forbiddenFunctions" type="array" extend="true">
+    <element key="sizeof" value="count"/>
+   </property>
+  </properties>
+ </rule>
+
+<rule ref="Generic.WhiteSpace.SpreadOperatorSpacingAfter">
+    <properties>
+        <property name="ignoreNewlines" value="true" />
+    </properties>
+</rule>
+
+<!-- Alignement des opérateurs -> -->
+ <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
+    <properties>
+        <property name="indent" value="2" />
+        <property name="multilevel" value="true" />
+    </properties>
+</rule>
+
+    <!-- Don't check function braces, but check closure braces. -->
+    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman">
+        <properties>
+            <property name="checkFunctions" value="true"/>
+            <property name="checkClosures" value="false"/>
+        </properties>
+    </rule>
+
+    <rule>
+        <exclude phpcbf-only="true" name="Generic.WhiteSpace.ScopeIndent"/>
+    </rule>
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"></rule>
+
+
+</ruleset>
