@@ -8,6 +8,8 @@ composer.phar
 *.bkp
 *.log
 *.tmp
+*.cache
+.*.cache
 
 # KEEP
 !composer.lock

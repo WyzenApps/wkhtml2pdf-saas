@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\RootScope;
+namespace Tests\Classes;
 
-use App\Classes\HtmlToPdf\HtmlToPdf;
 use Tests\TestCaseAbstract;
 
 /**
