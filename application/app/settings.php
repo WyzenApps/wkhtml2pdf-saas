@@ -5,6 +5,7 @@ declare(strict_types=1);
 use DI\ContainerBuilder;
 use Monolog\Logger;
 use App\Assets\Dotenv;
+use App\Assets\YamlConfig;
 
 return function (ContainerBuilder $containerBuilder) {
     $isDebugMode = Dotenv::isDebugMode();
@@ -24,10 +25,6 @@ return function (ContainerBuilder $containerBuilder) {
          */
         'isDebugMode' => $isDebugMode,
         'settings' => [
-            // 'commands' => [
-            //     \App\Scripts\ReponseSouhaiteBientotDepasseeCommand::class,
-            //     \App\Scripts\ImportDatasForEntreprisesPrestatairesProfilCommand::class
-            // ],
             'envir' => Dotenv::getenv('ENVIR'),
             'debug' => $isDebugMode,
             'appPath' => realpath(__DIR__ . '/../'),

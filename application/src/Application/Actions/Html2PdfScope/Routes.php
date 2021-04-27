@@ -19,11 +19,18 @@ final class Routes
     public static function create(RouteCollectorProxyInterface $app)
     {
         /**
-         * Actions sur test
+         * Actions
          */
         $app->group('/to-pdf', function (RouteCollectorProxyInterface $routes) {
             // Send
             $routes->get('', Html2PdfAction::class)->setName('html2pdf');
+            $routes->post('', Html2PdfAction::class)->setName('html2pdf');
+        });
+
+        $app->group('/to-image', function (RouteCollectorProxyInterface $routes) {
+            // Send
+            $routes->get('', Html2ImageAction::class)->setName('html2img');
+            $routes->post('', Html2ImageAction::class)->setName('html2img');
         });
 
         return $app;

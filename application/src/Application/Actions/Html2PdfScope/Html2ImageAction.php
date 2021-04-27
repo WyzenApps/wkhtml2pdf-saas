@@ -7,7 +7,7 @@ namespace App\Application\Actions\Html2PdfScope;
 use App\Application\Actions\ActionAbstract;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class Html2PdfAction extends ActionAbstract
+class Html2ImageAction extends ActionAbstract
 {
     /**
      * Création des datas pour generer doc api
@@ -16,8 +16,8 @@ class Html2PdfAction extends ActionAbstract
      */
     protected function action(): Response
     {
-        $url     = $this->resolveData('url', false);
-        $html    = $this->resolveData('html', false);
+        $url     = $this->resolveData('url') ?: null;
+        $html    = $this->resolveData('html') ?: null;
         $options = $this->resolveData('options') ?: [];
 
         if (!$url && !$html) {
@@ -31,12 +31,11 @@ class Html2PdfAction extends ActionAbstract
          *   params: [<params>]
          * ]
          */
-
         try {
             if ($url) {
-                $uc = new \App\UseCases\Html2Pdf\GenerateUriToPdf($this->getContainer());
+                $uc = new \App\UseCases\Html2Image\GenerateUriToImage($this->getContainer());
             } elseif ($html) {
-                $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
+                $uc = new \App\UseCases\Html2Image\GenerateHtmlToImage($this->getContainer());
             }
             $result = $uc($url, $options);
         } catch (\Exception $ex) {

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Show cmdline
+
+for outputfile in $@; do :; done
+
+echo $0 $* > $outputfile
+
+exit 0

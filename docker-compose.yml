@@ -1,0 +1,27 @@
+# Use root/example as user/password credentials
+version: '3.4'
+
+services:
+  wkhtml2pdf-saas:
+    image: wkhtml2pdf-saas:latest
+    container_name: wkhtml2pdf-saas
+    restart: always
+    env_file:
+      - ./docker-compose.env
+
+    volumes:
+      - ./application/data:/data
+      - ./application/output:/output
+
+    expose:
+      - 80
+
+    ports:
+      - 8888:80
+
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

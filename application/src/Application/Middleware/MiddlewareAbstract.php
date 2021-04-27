@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace App\Application\Middleware;
 
-use App\Domain\DomainException\DomainException;
+use App\Exceptions\DomainException;
+use App\Traits\ConfigTrait;
 use App\ValueObjects\AuthUser;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 
 abstract class MiddlewareAbstract implements MiddlewareInterface
 {
+    use ConfigTrait;
+
     /** @var ContainerInterface */
     protected $container = null;
 
@@ -31,6 +33,7 @@ abstract class MiddlewareAbstract implements MiddlewareInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->config    = $this->container->get('config');
     }
 
     /**

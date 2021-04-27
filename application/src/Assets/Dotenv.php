@@ -6,6 +6,8 @@
 
 namespace App\Assets;
 
+use Symfony\Component\VarDumper\VarDumper;
+
 class Dotenv
 {
     /**
@@ -42,7 +44,13 @@ class Dotenv
      */
     public static function getenv(string $key, $defaultValue = null)
     {
-        return isset($_ENV[$key]) ? $_ENV[$key] : $defaultValue;
+        $env_getenv = \getenv($key, true);
+        $env_ENV    = isset($_ENV[$key]) ? $_ENV[$key] : null;
+        $env        = $env_getenv ? $env_getenv : ($env_ENV ? $env_ENV : $defaultValue);
+
+        return $env;
+
+        // return isset($_ENV[$key]) ? $_ENV[$key] : $defaultValue;
     }
 
     /**

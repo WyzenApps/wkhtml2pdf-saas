@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace App\Application\Middleware;
 
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\MiddlewareInterface as Middleware;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Routing\RouteContext;
 
 /**
  * CORS middleware.
  */
-final class CorsMiddleware implements Middleware
+final class CorsMiddleware extends MiddlewareAbstract
 {
     /**
      * Invoke middleware.
@@ -23,18 +20,15 @@ final class CorsMiddleware implements Middleware
      *
      * @return ResponseInterface The response
      */
-    public function process(
-        Request $request,
-        RequestHandler $handler
-    ): Response
+    public function doProcess(): Response
     {
-        
-        $routeContext   = RouteContext::fromRequest($request);
+
+        $routeContext   = RouteContext::fromRequest($this->request);
         $routingResults = $routeContext->getRoutingResults();
         $methods        = $routingResults->getAllowedMethods();
-        $requestHeaders = $request->getHeaderLine('Access-Control-Request-Headers');
+        $requestHeaders = $this->request->getHeaderLine('Access-Control-Request-Headers');
 
-        $response = $handler->handle($request);
+        $response = $this->handler->handle($this->request);
 
         $response = $response
             ->withHeader('Access-Control-Allow-Origin', '*')

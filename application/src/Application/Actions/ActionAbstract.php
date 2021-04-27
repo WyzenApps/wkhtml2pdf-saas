@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Application\Actions;
 
 use App\Assets\Dotenv;
-use App\Domain\DomainException\DomainException;
-use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Exceptions\DomainException;
+use App\Exceptions\DomainRecordNotFoundException;
 use App\Domain\Logger\Logger;
+use App\Traits\ConfigTrait;
 use DateTime;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -15,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
 use OpenApi\Annotations as OA;
+use Symfony\Component\VarDumper\VarDumper;
 use Wyzen\Php\Helper;
 
 /**
@@ -71,6 +73,8 @@ use Wyzen\Php\Helper;
  */
 abstract class ActionAbstract
 {
+    use ConfigTrait;
+
     /**
      * Defini le type de retour de l'action
      *
@@ -129,6 +133,7 @@ abstract class ActionAbstract
     {
         $this->container = $container;
         $this->logger    = $this->container->get('logger');
+        $this->config    = $this->container->get('config');
         $this->startTime = new DateTime();
     }
 
@@ -361,6 +366,19 @@ abstract class ActionAbstract
     {
         $this->response->getBody()->write($content);
         return $this->response;
+    }
+
+    protected function respondPdf($content): Response
+    {
+        /**
+         * Affiche la ligne de commande en cas de debug
+         */
+        if ($this->getConfig('general', 'debug') === true) {
+            return $this->respondHtml("$content");
+        }
+
+        $this->response->getBody()->write($content);
+        return $this->response->withAddedHeader('Content-Type', 'application/pdf');
     }
 
     /**

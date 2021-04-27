@@ -12,7 +12,6 @@
 
 use App\Assets\Dotenv as AssetsDotenv;
 use Symfony\Component\Dotenv\Dotenv;
-use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Load config file from Environment variable
@@ -36,7 +35,8 @@ try {
     AssetsDotenv::required([
         'ENVIR',
         'APP_NAME',
-        'APP_CODE'
+        'APP_CODE',
+        'WK_PDF'
     ]);
 } catch (\Exception $ex) {
     throw new \Exception("core.invalid_config_file: " . $ex->getMessage(), 403);
@@ -47,7 +47,4 @@ try {
  */
 if (false === in_array(AssetsDotenv::getenv('ENVIR') ?: '', ['test', 'local', 'staging', 'production'])) {
     throw new \Exception("core.environment_not_defined", 403);
-}
-if (empty(AssetsDotenv::getenv('HOST'))) {
-    throw new \Exception("core.host_not_defined", 403);
 }

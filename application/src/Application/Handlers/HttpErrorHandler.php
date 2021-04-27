@@ -57,7 +57,7 @@ class HttpErrorHandler extends SlimErrorHandler
                 && $this->displayErrorDetails) {
                 $statusCode = 403; // $exception->getCode();
                 $error->setType(ActionError::VERIFICATION_ERROR);
-                $error->setDescription(ActionError::VERIFICATION_ERROR);
+                $error->setDescription($exception->getMessage());
                 $this->logger->warning($exception->getMessage());
             }
         }
