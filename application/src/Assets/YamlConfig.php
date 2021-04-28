@@ -6,7 +6,7 @@
 
 namespace App\Assets;
 
-use Symfony\Component\VarDumper\VarDumper;
+use Wyzen\Php\Helper;
 
 class YamlConfig
 {
@@ -53,25 +53,6 @@ class YamlConfig
     }
 
     /**
-     * Retourne la config globale ou depuis une clé
-     *
-     * @param string|null $key
-     *
-     * @return array
-     */
-    public function getConfig(?string $key = null): array
-    {
-        if ($key) {
-            if (\array_key_exists($key, $this->config)) {
-                return $this->config[$key];
-            }
-            return [];
-        }
-
-        return $this->config;
-    }
-
-    /**
      * Retourne la config total ou un élément de la config
      *
      * @param [array] ...$keys liste des clés de la config
@@ -80,17 +61,6 @@ class YamlConfig
      */
     public function getValue(...$keys)
     {
-        if (\is_null($keys) || \count($keys) === 0) {
-            return $this->config;
-        }
-
-        $data = $this->config;
-        foreach ($keys as $key) {
-            if (! \array_key_exists($key, $data)) {
-                return null;
-            }
-            $data = $data[$key];
-        }
-        return $data;
+        return Helper::findInArrayByKeys($this->config, ...$keys);
     }
 }

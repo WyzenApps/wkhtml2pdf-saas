@@ -25,6 +25,7 @@ class GenerateUriToImage extends UseCasesAbstract
         if (count($options)) {
             $wk->setOptions($options);
         }
+
         if ($this->getConfig('general', 'debug') === true) {
             return '<pre>' . \print_r($wk->getOptions(), true) . '</pre>';
         }

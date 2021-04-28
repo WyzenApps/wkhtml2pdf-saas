@@ -6,6 +6,7 @@ namespace App\Application\Actions\Html2PdfScope;
 
 use App\Application\Actions\ActionAbstract;
 use Psr\Http\Message\ResponseInterface as Response;
+use Wyzen\Php\Helper;
 
 class Html2PdfAction extends ActionAbstract
 {
@@ -16,11 +17,14 @@ class Html2PdfAction extends ActionAbstract
      */
     protected function action(): Response
     {
-        $url     = $this->resolveData('url', false);
-        $html    = $this->resolveData('html', false);
-        $options = $this->resolveData('options') ?: [];
+        $data           = $this->getFormData();
+        $url            = Helper::findInArrayByTag($data, 'url');
+        $html           = Helper::findInArrayByTag($data, 'html');
+        $options_common = Helper::findInArrayByKeys($data, 'options', 'common') ?: [] ;
+        $options_type   = Helper::findInArrayByKeys($data, 'options', 'pdf') ?: [];
 
-        if (!$url && !$html) {
+        $content = $url ?: $html ?: null;
+        if (!$content) {
             throw new \Exception("Bad parameter. Need url or html parameter");
         }
 
@@ -38,7 +42,7 @@ class Html2PdfAction extends ActionAbstract
             } elseif ($html) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
-            $result = $uc($url, $options);
+            $result = $uc($content, \array_merge($options_common, $options_type));
         } catch (\Exception $ex) {
             die($ex->getMessage());
         }

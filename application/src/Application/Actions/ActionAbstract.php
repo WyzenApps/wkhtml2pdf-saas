@@ -188,20 +188,18 @@ abstract class ActionAbstract
     abstract protected function action(): Response;
 
     /**
-     * @return array|object
+     * @return array
      * @throws HttpBadRequestException
      */
     protected function getFormData()
     {
-        $input = json_decode(file_get_contents('php://input'));
+        $input = json_decode(file_get_contents('php://input'), true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new HttpBadRequestException($this->request, 'Malformed JSON input.');
         }
 
         return $input;
     }
-
-
 
     /**
      * Return all args
@@ -379,6 +377,19 @@ abstract class ActionAbstract
 
         $this->response->getBody()->write($content);
         return $this->response->withAddedHeader('Content-Type', 'application/pdf');
+    }
+
+    protected function respondImage($content, string $type_image = null): Response
+    {
+        /**
+         * Affiche la ligne de commande en cas de debug
+         */
+        if ($this->getConfig('general', 'debug') === true) {
+            return $this->respondHtml("$content");
+        }
+
+        $this->response->getBody()->write($content);
+        return $this->response->withAddedHeader('Content-Type', "image/$type_image");
     }
 
     /**

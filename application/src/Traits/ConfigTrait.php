@@ -30,12 +30,12 @@ trait ConfigTrait
      */
     public function setDefaultOptions($wk, string $type = 'pdf')
     {
-        $wk->setOptions($this->getConfig('wk', 'common'));
+        $wk->setOptions($this->getConfig('wk', 'common') ?: []);
 
         switch (\strtolower($type)) {
             case 'pdf':
             case 'image':
-                $wk->setOptions($this->getConfig('wk', $type));
+                $wk->setOptions($this->getConfig('wk', "$type") ?: []);
                 break;
             default:
                 throw new \Exception("Bad type default option : $type");

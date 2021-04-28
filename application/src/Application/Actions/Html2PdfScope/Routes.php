@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Html2PdfScope;
 
 use App\Application\Actions\RootScope\RootAction;
+use App\Application\Middleware\AuthMiddleware;
 use Slim\Interfaces\RouteCollectorProxyInterface;
 
 final class Routes

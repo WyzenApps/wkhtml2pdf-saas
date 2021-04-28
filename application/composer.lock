@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b828d772aab4961c11a6153d52b3a0c1",
+    "content-hash": "19fe983c29702251f1b7677bb12efb06",
     "packages": [
         {
             "name": "brick/math",
@@ -187,6 +187,83 @@
                 "source": "https://github.com/KnpLabs/snappy/tree/master"
             },
             "time": "2020-01-20T08:30:30+00:00"
+        },
+        {
+            "name": "lcobucci/jwt",
+            "version": "3.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/jwt.git",
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/511629a54465e89a31d3d7e4cf0935feab8b14c1",
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "~1.5",
+                "phpmd/phpmd": "~2.2",
+                "phpunit/php-invoker": "~1.1",
+                "phpunit/phpunit": "^5.7 || ^7.3",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "suggest": {
+                "lcobucci/clock": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lcobucci\\JWT\\": "src"
+                },
+                "files": [
+                    "compat/class-aliases.php",
+                    "compat/json-exception-polyfill.php",
+                    "compat/lcobucci-clock-polyfill.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Luís Otávio Cobucci Oblonczyk",
+                    "email": "lcobucci@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to work with JSON Web Token and JSON Web Signature",
+            "keywords": [
+                "JWS",
+                "jwt"
+            ],
+            "support": {
+                "issues": "https://github.com/lcobucci/jwt/issues",
+                "source": "https://github.com/lcobucci/jwt/tree/3.4.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-02-16T09:40:01+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1586,16 +1663,16 @@
         },
         {
             "name": "wyzen-packages/helper",
-            "version": "v1.2.1",
+            "version": "v1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/wyzen-packages/helper.git",
-                "reference": "c8368b9a0e047d399117e7d675598583f3d2a11c"
+                "reference": "ddb569565f721f789f79cd14ba2c5f62f4131fe7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/wyzen-packages%2Fhelper/repository/archive.zip?sha=c8368b9a0e047d399117e7d675598583f3d2a11c",
-                "reference": "c8368b9a0e047d399117e7d675598583f3d2a11c",
+                "url": "https://gitlab.com/api/v4/projects/wyzen-packages%2Fhelper/repository/archive.zip?sha=ddb569565f721f789f79cd14ba2c5f62f4131fe7",
+                "reference": "ddb569565f721f789f79cd14ba2c5f62f4131fe7",
                 "shasum": ""
             },
             "require": {
@@ -1625,7 +1702,7 @@
             "support": {
                 "issues": "https://gitlab.com/wyzen-packages/helper/issues"
             },
-            "time": "2021-03-12T14:35:59+00:00"
+            "time": "2021-04-28T10:24:47+00:00"
         }
     ],
     "packages-dev": [
