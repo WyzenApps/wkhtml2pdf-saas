@@ -14,7 +14,6 @@ ENV LC_ALL="fr_FR.UTF-8"
 
 ENV APPDIR=/application
 ENV DATA_DIR=/data
-ENV OUTPUT_DIR=/output
 ENV WK_PDF=/usr/local/bin/wkhtmltopdf
 ENV WK_IMAGE=/usr/local/bin/wkhtmltoimage
 
@@ -27,7 +26,7 @@ RUN apt update \
 	&& apt -y --no-install-recommends dist-upgrade
 
 RUN cd /tmp \
-	&& mkdir -p ${APPDIR} ${DATA_DIR} ${OUTPUT_DIR} \
+	&& mkdir -p ${APPDIR} ${DATA_DIR} \
 	&& usermod -u 33 -g 33 -d ${APPDIR} www-data \
 	&& apt-get -y --no-install-recommends install curl wget git sudo locales vim
 
@@ -38,13 +37,11 @@ RUN apt-get -y install \
 	&& ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
 	&& . /etc/default/locale
 
-# COPY config/libjpeg62-turbo.deb /install/
-# COPY config/wkhtmltox.deb /install/
 COPY config/*.deb /install/
 RUN dpkg -i /install/libjpeg62-turbo.deb && rm /install/libjpeg62-turbo.deb
 RUN dpkg -i /install/wkhtmltox.deb && rm /install/wkhtmltox.deb
 
-# NODE, YARN, COMPOSER
+# COMPOSER
 RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
 	&& update-alternatives --set phar /usr/bin/phar${PHP_RELEASE} \
 	&& update-alternatives --set phar.phar /usr/bin/phar.phar${PHP_RELEASE} \
@@ -64,7 +61,7 @@ RUN cd /etc/alternatives && ln -sf /usr/bin/php${PHP_RELEASE} php \
 	php-json
 
 # CLEAN
-# RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # ADDITIONALS CONFIG
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/fpm/conf.d/99-overrides.ini
@@ -76,10 +73,13 @@ RUN cat /etc/profile.d/01-alias.sh > /etc/bash.bashrc
 WORKDIR ${APPDIR}
 
 COPY application ${APPDIR}
-RUN chown -R www-data:www-data ${APPDIR} ${DATA_DIR} ${OUTPUT_DIR}
-#&& cd ${APPDIR} && composer install --no-dev
 
-VOLUME [ "/data", "/output" ]
+RUN chown -R 33:33 ${APPDIR} ${DATA_DIR} \
+	&& cd ${APPDIR} && composer install --no-dev
+
+USER www-data:www-data
+
+VOLUME [ "/data" ]
 
 # Initializing Redis server and Gunicorn server from supervisord
 CMD ["php","-S","0.0.0.0:80","-t", "/application/public"]
