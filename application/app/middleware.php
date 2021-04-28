@@ -8,7 +8,6 @@ use App\Application\Middleware\DefaultMiddleware;
 use Slim\App;
 
 return function (App $app) {
-    $app->add(AuthMiddleware::class);
     $app->add(CorsMiddleware::class);
     $app->add(DefaultMiddleware::class);
 };

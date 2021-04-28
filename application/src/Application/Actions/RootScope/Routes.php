@@ -18,11 +18,8 @@ final class Routes
     public static function create(RouteCollectorProxyInterface $app)
     {
         // Help page
-        $app->get('/', RootAction::class)->setName('root');
-
-        // TODO generate pdf
-        // $app->post('/', RootAction::class)->setName('html2pdf');
-
+        $app->get('/', HomeAction::class)->setName('home');
+        $app->get('/parameters', HelpAction::class)->setName('help.parameters');
         return $app;
     }
 }

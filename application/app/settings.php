@@ -31,10 +31,6 @@ return function (ContainerBuilder $containerBuilder) {
 
             // Should be set to false in production
             'displayErrorDetails' => $isDebugMode,
-            'twig' => [
-                'path_templates' => __DIR__ . '/../src/Mails/mjml',
-                'path_cache' => $isDebugMode ? false : __DIR__ . '/../var/cache',
-            ],
             'logger' => [
                 'name' => Dotenv::getenv('APP_CODE'),
                 'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../var/logs',

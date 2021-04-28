@@ -43,9 +43,12 @@ class Html2ImageAction extends ActionAbstract
                 $uc = new \App\UseCases\Html2Image\GenerateHtmlToImage($this->getContainer());
             }
             $result = $uc($content, \array_merge($options_common, $options_type));
+
+            $uc->wk->removeTemporaryFiles();
         } catch (\Exception $ex) {
             die($ex->getMessage());
         }
+
         return $this->respondImage($result, $type_image);
     }
 }

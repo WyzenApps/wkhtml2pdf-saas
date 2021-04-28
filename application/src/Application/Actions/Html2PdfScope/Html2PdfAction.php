@@ -43,6 +43,8 @@ class Html2PdfAction extends ActionAbstract
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
             $result = $uc($content, \array_merge($options_common, $options_type));
+
+            $uc->wk->removeTemporaryFiles();
         } catch (\Exception $ex) {
             die($ex->getMessage());
         }

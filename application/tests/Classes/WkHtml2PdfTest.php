@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Classes;
 
+use App\Classes\WkHtml2Image;
 use App\Classes\WkHtml2Pdf;
 use App\Factory\WkHtml2PdfFactory;
 use Symfony\Component\VarDumper\VarDumper;
@@ -41,16 +42,28 @@ class WkHtml2PdfTest extends TestCaseAbstract
      */
     public function testCreateObjectInstanceOfWkHtml2Pdf()
     {
-        $h2p = WkHtml2PdfFactory::create('local');
+        $h2p = WkHtml2PdfFactory::create();
         $this->assertInstanceOf(WkHtml2Pdf::class, $h2p);
+
+        $h2p = WkHtml2PdfFactory::create('pdf');
+        $this->assertInstanceOf(WkHtml2Pdf::class, $h2p);
+
+        $h2p = WkHtml2PdfFactory::create('image');
+        $this->assertInstanceOf(WkHtml2Image::class, $h2p);
     }
 
     public function testGetDefaultBinary()
     {
         /** @var WkHtml2Pdf */
-        $h2p = WkHtml2PdfFactory::create();
-        $bin = $h2p->getBinary();
-        $this->assertEquals('../bin/wkhtml2pdf', $bin);
+        $h2p      = WkHtml2PdfFactory::create();
+        $bin      = $h2p->getBinary();
+        $basename = \basename($bin);
+        $this->assertEquals('wkhtmltopdf', $basename);
+
+        $h2p      = WkHtml2PdfFactory::create('image');
+        $bin      = $h2p->getBinary();
+        $basename = \basename($bin);
+        $this->assertEquals('wkhtmltoimage', $basename);
     }
 
     public function testGetOptions()

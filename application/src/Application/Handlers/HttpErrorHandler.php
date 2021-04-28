@@ -30,7 +30,7 @@ class HttpErrorHandler extends SlimErrorHandler
         $statusCode = 403;
 
         $error = new ActionError(
-            ActionError::SERVER_ERROR,
+            ActionError::INSUFFICIENT_PRIVILEGES,
             'An internal error has occurred while processing your request.'
         );
 

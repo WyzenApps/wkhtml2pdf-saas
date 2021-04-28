@@ -8,6 +8,9 @@ use App\UseCases\UseCasesAbstract;
 
 class GenerateUriToPdf extends UseCasesAbstract
 {
+    /** @var WkHtml2Pdf */
+    public $wk = null;
+
     /**
      * Undocumented function
      *
@@ -19,15 +22,18 @@ class GenerateUriToPdf extends UseCasesAbstract
     public function __invoke(string $uri, array $options = [])
     {
         /** @var WkHtml2Pdf */
-        $wk = WkHtml2PdfFactory::create();
-        $this->setDefaultOptions($wk, 'pdf');
+        $this->wk = WkHtml2PdfFactory::create();
+        $this->setDefaultOptions($this->wk, 'pdf');
 
         if (count($options)) {
-            $wk->setOptions($options);
+            $this->wk->setOptions($options);
         }
         if ($this->getConfig('general', 'debug') === true) {
-            return '<pre>' . \print_r($wk->getOptions(), true) . '</pre>';
+            return '<pre>' . \print_r($this->wk->getOptions(), true) . '</pre>';
         }
-        return $wk->getOutput($uri);
+
+        $this->wk->removeTemporaryFiles();
+
+        return $this->wk->getOutput($uri);
     }
 }

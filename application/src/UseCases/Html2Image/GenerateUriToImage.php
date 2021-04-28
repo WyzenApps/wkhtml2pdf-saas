@@ -8,6 +8,8 @@ use App\UseCases\UseCasesAbstract;
 
 class GenerateUriToImage extends UseCasesAbstract
 {
+    /** @var WkHtml2Image */
+    public $wk = null;
 
     /**
      * Undocumented function
@@ -20,15 +22,15 @@ class GenerateUriToImage extends UseCasesAbstract
     public function __invoke(string $uri, array $options = [])
     {
         /** @var WkHtml2Image */
-        $wk = WkHtml2PdfFactory::create('image');
-        $this->setDefaultOptions($wk, 'image');
+        $this->wk = WkHtml2PdfFactory::create('image');
+        $this->setDefaultOptions($this->wk, 'image');
         if (count($options)) {
-            $wk->setOptions($options);
+            $this->wk->setOptions($options);
         }
 
         if ($this->getConfig('general', 'debug') === true) {
-            return '<pre>' . \print_r($wk->getOptions(), true) . '</pre>';
+            return '<pre>' . \print_r($this->wk->getOptions(), true) . '</pre>';
         }
-        return $wk->getOutput($uri);
+        return $this->wk->getOutput($uri);
     }
 }
