@@ -35,10 +35,10 @@ RUN apt update \
 RUN apt-get -y install \
 	#&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libjpeg62-turbo libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
 	&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
-	&& wget -O /install/wkhtmltox.deb  https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
-	&& wget -O /install/libjpeg62-turbo.deb http://ftp.br.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_1.5.2-2+deb10u1_amd64.deb \
-	&& dpkg -i /install/libjpeg62-turbo.deb && rm /install/libjpeg62-turbo.deb \
-	&& dpkg -i /install/wkhtmltox.deb && rm /install/wkhtmltox.deb
+	&& wget -O /tmp/wkhtmltox.deb  https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
+	&& wget -O /tmp/libjpeg62-turbo.deb http://ftp.br.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_1.5.2-2+deb10u1_amd64.deb \
+	&& dpkg -i /tmp/libjpeg62-turbo.deb \
+	&& dpkg -i /tmp/wkhtmltox.deb
 
 # COMPOSER
 RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
@@ -59,7 +59,7 @@ RUN apt-get -y --no-install-recommends install \
 	php-json
 
 # CLEAN
-RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /install/*
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # ADDITIONALS CONFIG
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/fpm/conf.d/99-overrides.ini
