@@ -23,23 +23,22 @@ COPY config/system/locale.gen /etc/locale.gen
 COPY config/system/export_locale.sh /etc/profile.d/05-export_locale.sh
 
 RUN apt update \
-	&& apt -y --no-install-recommends dist-upgrade
-
-RUN cd /tmp \
+	&& apt -y --no-install-recommends dist-upgrade \
 	&& mkdir -p ${APPDIR} ${DATA_DIR} \
 	&& usermod -u 33 -g 33 -d ${APPDIR} www-data \
-	&& apt-get -y --no-install-recommends install curl wget git sudo locales vim
-
-RUN apt-get -y install \
-	#&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libjpeg62-turbo libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
-	&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
+	&& chown -R www-data:www-data ${APPDIR} ${DATA_DIR} \
+	&& apt-get -y --no-install-recommends install curl wget git sudo locales vim \
 	&& locale-gen $LOCALE && update-locale LANGUAGE=${LOCALE} LC_ALL=${LOCALE} LANG=${LOCALE} LC_CTYPE=${LOCALE} \
 	&& ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
 	&& . /etc/default/locale
 
-COPY config/*.deb /install/
-RUN dpkg -i /install/libjpeg62-turbo.deb && rm /install/libjpeg62-turbo.deb
-RUN dpkg -i /install/wkhtmltox.deb && rm /install/wkhtmltox.deb
+RUN apt-get -y install \
+	#&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libjpeg62-turbo libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
+	&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
+	&& wget -O /install/wkhtmltox.deb  https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
+	&& wget -O /install/libjpeg62-turbo.deb http://ftp.br.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_1.5.2-2+deb10u1_amd64.deb \
+	&& dpkg -i /install/libjpeg62-turbo.deb && rm /install/libjpeg62-turbo.deb \
+	&& dpkg -i /install/wkhtmltox.deb && rm /install/wkhtmltox.deb
 
 # COMPOSER
 RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
@@ -50,8 +49,7 @@ RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
 	php composer-setup.php --quiet && mv composer.phar /usr/local/bin/composer && rm composer-setup.php
 
 # PHP Packages
-RUN cd /etc/alternatives && ln -sf /usr/bin/php${PHP_RELEASE} php \
-	&& apt-get -y --no-install-recommends install \
+RUN apt-get -y --no-install-recommends install \
 	php${PHP_RELEASE}-gd \
 	php${PHP_RELEASE}-intl \
 	php${PHP_RELEASE}-mbstring \
@@ -61,7 +59,7 @@ RUN cd /etc/alternatives && ln -sf /usr/bin/php${PHP_RELEASE} php \
 	php-json
 
 # CLEAN
-RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /install/*
 
 # ADDITIONALS CONFIG
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/fpm/conf.d/99-overrides.ini
@@ -72,12 +70,10 @@ RUN cat /etc/profile.d/01-alias.sh > /etc/bash.bashrc
 
 WORKDIR ${APPDIR}
 
-COPY application ${APPDIR}
-
-RUN chown -R 33:33 ${APPDIR} ${DATA_DIR} \
-	&& cd ${APPDIR} && composer install --no-dev
-
 USER www-data:www-data
+
+COPY application ${APPDIR}
+RUN cd ${APPDIR} && composer install --no-dev
 
 VOLUME [ "/data" ]
 
