@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TAG=${1:-"wkhtml2pdf-saas"}
+TAG=${1:-"latest"}
 
-docker build -f Dockerfile --tag ${TAG}:latest .
+docker build --rm -f Dockerfile --tag wkhtml2pdf-saas:${TAG} .
 

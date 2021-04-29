@@ -4,6 +4,7 @@ composer.phar
 /config/*.deb
 /var/cache/*
 /data/*
+!/data/*.html
 .env
 *.bkp
 *.log

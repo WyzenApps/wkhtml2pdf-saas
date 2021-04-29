@@ -36,6 +36,6 @@ class GenerateHtmlToImage extends UseCasesAbstract
         if ($this->getConfig('general', 'debug') === true) {
             return '<pre>' . \print_r($this->wk->getOptions(), true) . '</pre>';
         }
-        return $this->wk->getOutputFromHtml($html);
+        return $this->wk->getOutputFromHtml(\html_entity_decode($html));
     }
 }

@@ -12,7 +12,7 @@ services:
       - ./docker-compose.env
 
     volumes:
-      - ./data:/data
+      - ./application/data:/data
 
     expose:
       - 80

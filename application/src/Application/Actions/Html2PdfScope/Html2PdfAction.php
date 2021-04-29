@@ -20,12 +20,17 @@ class Html2PdfAction extends ActionAbstract
         $data           = $this->getFormData();
         $url            = Helper::findInArrayByTag($data, 'url');
         $html           = Helper::findInArrayByTag($data, 'html');
+        $html64         = Helper::findInArrayByTag($data, 'html64');
         $options_common = Helper::findInArrayByKeys($data, 'options', 'common') ?: [] ;
         $options_type   = Helper::findInArrayByKeys($data, 'options', 'pdf') ?: [];
 
-        $content = $url ?: $html ?: null;
+        $content = $url ?: $html ?: $html64 ?: null;
         if (!$content) {
             throw new \Exception("Bad parameter. Need url or html parameter");
+        }
+
+        if ($html64) {
+            $content = \base64_decode($html64);
         }
 
         /**
@@ -39,13 +44,14 @@ class Html2PdfAction extends ActionAbstract
         try {
             if ($url) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateUriToPdf($this->getContainer());
-            } elseif ($html) {
+            } else {
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
             $result = $uc($content, \array_merge($options_common, $options_type));
 
             $uc->wk->removeTemporaryFiles();
         } catch (\Exception $ex) {
+            throw new \Exception("Convert error, verify your source");
             die($ex->getMessage());
         }
         return $this->respondPdf($result);
