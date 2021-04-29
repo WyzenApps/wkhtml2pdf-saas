@@ -55,14 +55,15 @@ RUN apt -y install \
 	libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 \
 	sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils
 
+# INSTALL WK
+COPY install /install
+RUN chmod +x /install/install.sh && /install/install.sh
+
 # ADDITIONALS CONFIG
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/fpm/conf.d/99-overrides.ini
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/cli/conf.d/99-overrides.ini
 COPY ./config/system/alias.sh /etc/profile.d/01-alias.sh
 RUN cat /etc/profile.d/01-alias.sh > /etc/bash.bashrc
-
-COPY ./install /install
-RUN chmod +x /install/install.sh && /install/install.sh
 
 # CLEAN
 RUN apt -y purge php8.0* \
@@ -70,13 +71,11 @@ RUN apt -y purge php8.0* \
 	&& apt -y clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /install/*
 
-COPY application ${APP_DIR}
-RUN cd ${APP_DIR} \
-	&& composer install --no-dev \
-	&& chown -R 33:33 ${APP_DIR}
+USER www-data
+WORKDIR ${APP_DIR}
+COPY --chown=www-data:www-data application ${APP_DIR}
+RUN cd ${APP_DIR} && composer install --no-dev
 
 VOLUME [ "/data" ]
-WORKDIR ${APP_DIR}
-USER www-data
 # Initializing Redis server and Gunicorn server from supervisord
 CMD ["php","-S","0.0.0.0:80","-t", "/application/public"]
