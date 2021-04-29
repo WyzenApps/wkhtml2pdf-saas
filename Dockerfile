@@ -1,18 +1,17 @@
 #FROM php:7.4-cli-buster
-#FROM phpdockerio/php73-cli
 FROM wyzenrepo/php-fpm74:latest
 
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PHP_RELEASE=7.4
-ARG APPDIR=/application
+ARG APP_DIR=/application
 ARG TIMEZONE="Europe/Paris"
 ARG LOCALE="fr_FR.UTF-8"
 ARG LC_ALL="fr_FR.UTF-8"
 ENV LOCALE="fr_FR.UTF-8"
 ENV LC_ALL="fr_FR.UTF-8"
 
-ENV APPDIR=/application
+ENV APP_DIR=/application
 ENV DATA_DIR=/data
 ENV WK_PDF=/usr/local/bin/wkhtmltopdf
 ENV WK_IMAGE=/usr/local/bin/wkhtmltoimage
@@ -24,23 +23,15 @@ COPY config/system/export_locale.sh /etc/profile.d/05-export_locale.sh
 
 RUN apt update \
 	&& apt -y --no-install-recommends dist-upgrade \
-	&& mkdir -p ${APPDIR} ${DATA_DIR} \
-	&& usermod -u 33 -g 33 -d ${APPDIR} www-data \
-	&& chown -R www-data:www-data ${APPDIR} ${DATA_DIR} \
-	&& apt-get -y --no-install-recommends install curl wget git sudo locales vim \
+	&& mkdir -p ${DATA_DIR} \
+	&& usermod -u 33 -g 33 -d ${APP_DIR} www-data \
+	&& chown -R www-data:www-data ${DATA_DIR} \
+	&& apt -y --no-install-recommends install curl wget git sudo locales vim \
 	&& locale-gen $LOCALE && update-locale LANGUAGE=${LOCALE} LC_ALL=${LOCALE} LANG=${LOCALE} LC_CTYPE=${LOCALE} \
 	&& ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
 	&& . /etc/default/locale
 
-RUN apt-get -y install \
-	#&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libjpeg62-turbo libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
-	&& apt-get -y install fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils \
-	&& wget -O /tmp/wkhtmltox.deb  https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
-	&& wget -O /tmp/libjpeg62-turbo.deb http://ftp.br.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_1.5.2-2+deb10u1_amd64.deb \
-	&& dpkg -i /tmp/libjpeg62-turbo.deb \
-	&& dpkg -i /tmp/wkhtmltox.deb
-
-# COMPOSER
+# COMPOSER, PHP
 RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
 	&& update-alternatives --set phar /usr/bin/phar${PHP_RELEASE} \
 	&& update-alternatives --set phar.phar /usr/bin/phar.phar${PHP_RELEASE} \
@@ -49,7 +40,7 @@ RUN update-alternatives --set php /usr/bin/php${PHP_RELEASE} \
 	php composer-setup.php --quiet && mv composer.phar /usr/local/bin/composer && rm composer-setup.php
 
 # PHP Packages
-RUN apt-get -y --no-install-recommends install \
+RUN apt -y --no-install-recommends install \
 	php${PHP_RELEASE}-gd \
 	php${PHP_RELEASE}-intl \
 	php${PHP_RELEASE}-mbstring \
@@ -58,24 +49,34 @@ RUN apt-get -y --no-install-recommends install \
 	php${PHP_RELEASE}-zip \
 	php-json
 
-# CLEAN
-RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+# Dependencies for wk
+RUN apt -y install \
+	fontconfig fontconfig-config fonts-dejavu-core libfontconfig1 libfontenc1 libfreetype6 \
+	libpng16-16 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxrender1 \
+	sensible-utils ucf x11-common xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils
 
 # ADDITIONALS CONFIG
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/fpm/conf.d/99-overrides.ini
 COPY ./config/php/php-ini-overrides.ini /etc/php/${PHP_RELEASE}/cli/conf.d/99-overrides.ini
 COPY ./config/system/alias.sh /etc/profile.d/01-alias.sh
-
 RUN cat /etc/profile.d/01-alias.sh > /etc/bash.bashrc
 
-WORKDIR ${APPDIR}
+COPY ./install /install
+RUN chmod +x /install/install.sh && /install/install.sh
 
-USER www-data:www-data
+# CLEAN
+RUN apt -y purge php8.0* \
+	&& apt -y autoremove \
+	&& apt -y clean \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /install/*
 
-COPY application ${APPDIR}
-RUN cd ${APPDIR} && composer install --no-dev
+COPY application ${APP_DIR}
+RUN cd ${APP_DIR} \
+	&& composer install --no-dev \
+	&& chown -R 33:33 ${APP_DIR}
 
 VOLUME [ "/data" ]
-
+WORKDIR ${APP_DIR}
+USER www-data
 # Initializing Redis server and Gunicorn server from supervisord
 CMD ["php","-S","0.0.0.0:80","-t", "/application/public"]

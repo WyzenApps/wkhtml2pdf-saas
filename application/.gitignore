@@ -13,4 +13,3 @@ composer.phar
 
 # KEEP
 !composer.lock
-!.gitkeep

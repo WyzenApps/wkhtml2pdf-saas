@@ -25,7 +25,12 @@ $dotenv = new Dotenv(false);
 
 /** @var Dotenv */
 try {
-    $dotenv->overload(__DIR__ . '/.env.core', __DIR__ . '/.env');
+    if (\file_exists(__DIR__ . '/.env')) {
+        $dotenv->overload(__DIR__ . '/.env.core', __DIR__ . '/.env');
+    } else {
+        $dotenv->overload(__DIR__ . '/.env.core');
+    }
+
     /**
      * SI ENVIR FORCED, ON ECRASE ENVIR <- ENVIR_FORCED
      */

@@ -43,18 +43,18 @@ Use POST method.
     "html": "<strong>PDF from html code inline</strong>",
     "options":{
         "common":{
-        "javascript-delay" : 1000,
-        "no-stop-slow-scripts": true
+            "javascript-delay" : 1000,
+            "no-stop-slow-scripts": true
         },
-    "pdf":{
-        "title": "Html to Pdf Generator",
-        "orientation": "Portrait",
-        "header-center" : "From Html to Pdf Generator",
-        "footer-center" : "from Wyzen"
-        },
-    "image":{
-        "format": "png"
-        }
+        "pdf":{
+            "title": "Html to Pdf Generator",
+            "orientation": "Portrait",
+            "header-center" : "From Html to Pdf Generator",
+            "footer-center" : "from Wyzen"
+            },
+        "image":{
+            "format": "png"
+            }
     }
 }
 </code></pre>
@@ -62,7 +62,7 @@ Use POST method.
 <h2>PDF parameters</h2>
 <ul>$options_pdf</ul>
 <h2>IMAGE parameters</h2>
-<ul>$options_pdf</ul>
+<ul>$options_image</ul>
 HTML;
 
         return $this->respondHtml($html);

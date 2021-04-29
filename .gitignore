@@ -1,2 +1,4 @@
-/config/*.deb
+/install/*
+!/install/*.sh
+!.gitkeep
 config.yml
