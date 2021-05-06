@@ -79,4 +79,4 @@ USER www-data
 WORKDIR ${APP_DIR}
 VOLUME [ "/data" ]
 # Initializing Redis server and Gunicorn server from supervisord
-CMD ["php","-S","0.0.0.0:80","-t", "/www/public"]
+CMD ["php","-S","0.0.0.0:80","-c","/www/php.ini", "-t", "/www/public"]

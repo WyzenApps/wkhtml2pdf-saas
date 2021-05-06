@@ -47,7 +47,7 @@ class YamlConfig
         $this->config = \array_merge([
             'general' => [],
             'account' => [],
-            'wk' => [],
+            'options' => [],
         ], $parsed);
         return $this->config;
     }

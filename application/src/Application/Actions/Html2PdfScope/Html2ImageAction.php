@@ -21,11 +21,16 @@ class Html2ImageAction extends ActionAbstract
         $url            = Helper::findInArrayByTag($data, 'url');
         $html           = Helper::findInArrayByTag($data, 'html');
         $html64         = Helper::findInArrayByTag($data, 'html64');
-        $options_common = Helper::findInArrayByKeys($data, 'options', 'common') ?: [] ;
+        $options_common = Helper::findInArrayByKeys($data, 'options', 'common') ?: [];
         $options_type   = Helper::findInArrayByKeys($data, 'options', 'image') ?: [];
 
-        $type_image = $this->getConfig('wk', 'image', 'format') ;
-        $content    = $url ?: $html ?: $html64 ?: null;
+        $options = $options_common + $options_type;
+
+        $type_image = Helper::findInArrayByTag($options, 'format')
+            ?: $this->getConfig('options', 'image', 'format')
+            ?: null;
+
+        $content = $url ?: $html ?: $html64 ?: null;
         if (!$content) {
             throw new \Exception("Bad parameter. Need url or html parameter");
         }
@@ -47,7 +52,10 @@ class Html2ImageAction extends ActionAbstract
             } else {
                 $uc = new \App\UseCases\Html2Image\GenerateHtmlToImage($this->getContainer());
             }
-            $result = $uc($content, \array_merge($options_common, $options_type));
+            $result = $uc($content, $options);
+
+            $options    = $uc->wk->getOptions();
+            $type_image = $options['format'];
 
             $uc->wk->removeTemporaryFiles();
         } catch (\Exception $ex) {

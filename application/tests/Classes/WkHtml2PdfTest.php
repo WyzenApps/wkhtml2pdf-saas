@@ -75,4 +75,16 @@ class WkHtml2PdfTest extends TestCaseAbstract
 
         $this->assertEquals('landscape', $options['orientation']);
     }
+
+    public function testFormatImage()
+    {
+        $h2p = WkHtml2PdfFactory::create('image');
+        $h2p->setOptions(['format' => 'jpeg']);
+        $options = $h2p->getOptions();
+        $this->assertEquals('jpeg', $options['format']);
+
+        $h2p->setOptions(['format' => 'png']);
+        $options = $h2p->getOptions();
+        $this->assertEquals('png', $options['format']);
+    }
 }

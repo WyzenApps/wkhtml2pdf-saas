@@ -24,6 +24,8 @@ class Html2PdfAction extends ActionAbstract
         $options_common = Helper::findInArrayByKeys($data, 'options', 'common') ?: [] ;
         $options_type   = Helper::findInArrayByKeys($data, 'options', 'pdf') ?: [];
 
+        $options = $options_common + $options_type;
+
         $content = $url ?: $html ?: $html64 ?: null;
         if (!$content) {
             throw new \Exception("Bad parameter. Need url or html parameter");
@@ -47,7 +49,7 @@ class Html2PdfAction extends ActionAbstract
             } else {
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
-            $result = $uc($content, \array_merge($options_common, $options_type));
+            $result = $uc($content, $options);
 
             $uc->wk->removeTemporaryFiles();
         } catch (\Exception $ex) {
