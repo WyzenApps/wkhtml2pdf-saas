@@ -25,10 +25,5 @@ final class Routes
             // Send
             $routes->post('', Html2PdfAction::class)->setName('post_html2pdf');
         })->add(AuthMiddleware::class);
-
-        $app->group('/to-image', function (RouteCollectorProxyInterface $routes) {
-            // Send
-            $routes->post('', Html2ImageAction::class)->setName('post_html2img');
-        })->add(AuthMiddleware::class);
     }
 }

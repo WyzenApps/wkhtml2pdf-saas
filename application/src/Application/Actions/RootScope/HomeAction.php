@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\RootScope;
 
 use App\Application\Actions\ActionAbstract;
-use App\Factory\WkHtml2PdfFactory;
+use Parsedown;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class HomeAction extends ActionAbstract
@@ -17,10 +17,18 @@ class HomeAction extends ActionAbstract
      */
     protected function action(): Response
     {
-        $html = <<<HTML
-<h1>HTML to PDF service</h1>
-Generate PDF from url or html code inline
-HTML;
+        $content  = \file_get_contents(__ROOT_APP__ . '/docs/home.md');
+        $markdown = new Parsedown();
+        $markdown->setSafeMode(true);
+        $markdown->setMarkupEscaped(true);
+
+        $html  = \file_get_contents(__ROOT_APP__ . '/src/Views/html_header.html');
+        $html .= "<body>";
+        $html .= "<style>" . \file_get_contents(__ROOT_APP__ . '/docs/modest.css') . "</style>";
+        $html .= $markdown->parse($content);
+        $html .= "</body>";
+        $html .= \file_get_contents(__ROOT_APP__ . '/src/Views/html_footer.html');
+
         return $this->respondHtml($html);
     }
 }

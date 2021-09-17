@@ -2,9 +2,6 @@
 
 namespace App\Traits;
 
-use Knp\Snappy\Image;
-use Knp\Snappy\Pdf;
-
 trait ConfigTrait
 {
 

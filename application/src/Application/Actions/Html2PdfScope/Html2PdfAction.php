@@ -46,12 +46,11 @@ class Html2PdfAction extends ActionAbstract
         try {
             if ($url) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateUriToPdf($this->getContainer());
-            } else {
+            }
+            if ($html) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
-            $result = $uc($content, $options);
-
-            $uc->wk->removeTemporaryFiles();
+            $result = $uc("$content", $options);
         } catch (\Exception $ex) {
             throw new \Exception("Convert error, verify your source");
             die($ex->getMessage());

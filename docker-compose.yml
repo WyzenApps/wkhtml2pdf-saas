@@ -4,9 +4,9 @@ version: '3.4'
 # Docker for local use
 
 services:
-  wkhtml2pdf-saas:
-    image: wkhtml2pdf-saas:1.1.1
-    container_name: wkhtml2pdf-saas
+  html2pdf-saas:
+    image: wyzenrepo/html2pdf:pdfmyurl
+    container_name: html2pdf-saas
     restart: always
     env_file:
       - ./docker-compose.env
@@ -16,9 +16,6 @@ services:
 
     expose:
       - 80
-
-    ports:
-      - 8888:80
 
     networks:
       - traefik_default

@@ -7,7 +7,7 @@ use App\Classes\WkHtml2Image;
 use App\Classes\WkHtml2Pdf;
 use App\Exceptions\RessourceException;
 
-class WkHtml2PdfFactory
+class Html2PdfFactory
 {
     /**
      * Create WkHtml2Pdf object
@@ -18,15 +18,10 @@ class WkHtml2PdfFactory
      */
     public static function create(?string $type = 'pdf')
     {
-        $wk = null;
         switch (\strtolower($type)) {
             case 'pdf':
                 $wk        = new WkHtml2Pdf();
                 $wk_binary = Dotenv::getenv('WK_PDF');
-                break;
-            case 'image':
-                $wk        = new WkHtml2Image();
-                $wk_binary = Dotenv::getenv('WK_IMAGE');
                 break;
 
             default:

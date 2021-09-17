@@ -23,6 +23,8 @@ $appConfig = false;
 
 $dotenv = new Dotenv(false);
 
+define('__ROOT_APP__', realpath(__DIR__ . '/..'));
+
 /** @var Dotenv */
 try {
     if (\file_exists(__DIR__ . '/.env')) {
@@ -40,8 +42,7 @@ try {
     AssetsDotenv::required([
         'ENVIR',
         'APP_NAME',
-        'APP_CODE',
-        'WK_PDF'
+        'APP_CODE'
     ]);
 } catch (\Exception $ex) {
     throw new \Exception("core.invalid_config_file: " . $ex->getMessage(), 403);

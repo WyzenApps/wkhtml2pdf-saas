@@ -1,6 +1,6 @@
 {
-    "name": "wyzen/wkhtml2pdf-saas",
-    "description": "Convert HTML to PDF from URL or HTML as SAAS",
+    "name": "wyzen/html2pdf-saas",
+    "description": "Convert HTML to PDF from URL as SAAS",
     "authors": [
         {
             "name": "WYZEN",
@@ -19,7 +19,8 @@
     "require": {
         "php": ">=7.2.0",
         "ext-yaml": "*",
-        "knplabs/knp-snappy": "^1.2",
+        "erusev/parsedown": "^1.7",
+        "guzzlehttp/guzzle": "^6.5",
         "lcobucci/jwt": "^3.4",
         "monolog/monolog": "^2.2",
         "php-di/php-di": "^6.3",
