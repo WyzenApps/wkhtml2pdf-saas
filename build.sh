@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. config.docker
 
-TAG=${1:-"latest"}
+TAG=${TAG:-"latest"}
 
-docker build --rm -f Dockerfile --tag wkhtml2pdf-saas:${TAG} .
+docker build --rm -f Dockerfile --tag "${VENDOR}/${IMAGE}:${TAG}" .
 

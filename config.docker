@@ -1,0 +1,4 @@
+VENDOR=wyzenrepo
+IMAGE=wkhtml2pdf-saas
+TAG=1.1.1
+SHELL=sh
