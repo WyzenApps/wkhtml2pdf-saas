@@ -2,3 +2,4 @@
 !/install/*.sh
 !.gitkeep
 config.yml
+.env

@@ -5,11 +5,17 @@ version: '3.4'
 
 services:
   html2pdf-saas:
-    image: wyzenrepo/html2pdf:pdfmyurl
+    image: wyzenrepo/html2pdf-saas:pdfmyurl
     container_name: html2pdf-saas
     restart: always
     env_file:
       - ./docker-compose.env
+      - ./.env
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.html2pdf-saas-http.rule=Host(`$WEB_HOST`)"
+      - "traefik.http.routers.html2pdf-saas-http.entrypoints=web"
 
     volumes:
       - ./application/data:/data

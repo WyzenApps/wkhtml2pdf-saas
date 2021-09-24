@@ -71,66 +71,52 @@ class UseCasesAbstract
     }
 
     /**
-     * Requête Post
+     * Merge les options par défaut et ceux de l'appli externe
      *
-     * @param string $uri
      * @param array $options
+     *
      * @return array
      */
-    public function getPdf(string $uri, array $options = []): array
+    public function mergeOptions($options = []): array
     {
         $header = \file_get_contents(\__ROOT_APP__ . '/data/header.html');
         $footer = \file_get_contents(\__ROOT_APP__ . '/data/footer.html');
 
         $mergedOptions = [
             'form_params' => [
-                'license' => Dotenv::getenv('LICENSE'),
-                'url' => $uri,
+                'license' => Dotenv::getenv('PDF_LICENSE'),
                 'unit' => 'mm',
-                'top' => '20',
-                'bottom' => '20',
+                'top' => '10',
+                'bottom' => '10',
                 'left' => '10',
                 'right' => '10',
-                'title' => 'TEST PDF',
                 'page_size' => 'A4',
                 'orientation' => 'Portrait',
-                'header' => $header,
-                'footer' => $footer,
-                'no_background' => true,
                 'javascript_time' => 500,
                 'toc' => true,
-                'encryption_level' => 128,
-                'no_print' => true,
-                'no_copy' => true,
-                'no_modify' => true,
-                'owner_password' => 'test',
+                'header' => $header,
+                'footer' => $footer,
             ]
         ];
 
         $mergedOptions['form_params'] = \array_merge($mergedOptions['form_params'], $options);
 
-        try {
-            /** @var ResponseInterface */
-            $response = $this->client->post(Dotenv::getenv('HOST_API'), $mergedOptions);
+        return $mergedOptions;
+    }
 
-            return [
-                "statusCode" => $response->getStatusCode(),
-                "data" => $response->getBody()->getContents(),
-                "message" => $response->getReasonPhrase(),
-            ];
-        } catch (\GuzzleHttp\Exception\BadResponseException $exception) {
-            return [
-                "statusCode" => $exception->getCode(),
-                "data" => $response->getBody()->getContents(),
-                "message" => $exception->getMessage(),
-            ];
-        } catch (GuzzleException $ex) {
-            return [
-                "statusCode" => $ex->getCode(),
-                "data" => "Error",
-                "message" => $ex->getMessage(),
-            ];
-        }
+    /**
+     * Requête Post
+     *
+     * @param string $uri
+     * @param array $options
+     * @return array
+     */
+    public function getPdf(string $url, array $options = []): array
+    {
+        $options['url'] = $url;
+        $mergedOptions  = $this->mergeOptions($options);
+
+        return $this->callApi($mergedOptions);
     }
 
     /**
@@ -142,52 +128,24 @@ class UseCasesAbstract
      */
     public function getPdfFromHtml(string $html, array $options = []): array
     {
-        $header = <<<HTML
-        <html><body style="border: 1px solid red;  height: 40px;">
-<table style="border-bottom: 1px solid black; width: 100%">
-    <tr>
-        <td>%title</td>
-        <td style="text-align:right">%DD %MM %YYYY</td>
-    </tr>
-</table>
-</body></html>
-HTML;
+        $options['html'] = $html;
+        $mergedOptions   = $this->mergeOptions($options);
 
-        $footer = <<<HTML
-        <html><body style="border: 1px solid blue; height: 40px;">
-<table style="border-top: 1px solid black; width: 100%">
-    <tr>
-        <td class=""></td>
-        <td style="text-align:right">
-            Page %page of %topage
-        </td>
-    </tr>
-</table>
-</body></html>
-HTML;
+        return $this->callApi($mergedOptions);
+    }
 
-        $options['form_params'] =
-        [
-            'license' => Dotenv::getenv('LICENSE'),
-            'html' => $html,
-            'unit' => 'mm',
-            'top' => '20',
-            'bottom' => '20',
-            'left' => '10',
-            'right' => '10',
-            'title' => 'TEST PDF',
-            'page_size' => 'A4',
-            'orientation' => 'Portrait',
-            'header' => $header,
-            'footer' => $footer,
-            'no_background' => true,
-            'javascript_time' => 500,
-            'toc' => true,
-        ];
-
+    /**
+     * Appel de l'api
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    public function callApi($options = []): array
+    {
         try {
             /** @var ResponseInterface */
-            $response = $this->client->post(Dotenv::getenv('HOST_API'), $options);
+            $response = $this->client->post(Dotenv::getenv('PDF_HOST_API'), $options);
 
             return [
                 "statusCode" => $response->getStatusCode(),

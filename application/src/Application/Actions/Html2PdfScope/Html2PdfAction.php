@@ -25,14 +25,14 @@ class Html2PdfAction extends ActionAbstract
         $options_type   = Helper::findInArrayByKeys($data, 'options', 'pdf') ?: [];
 
         $options = $options_common + $options_type;
-
-        $content = $url ?: $html ?: $html64 ?: null;
-        if (!$content) {
-            throw new \Exception("Bad parameter. Need url or html parameter");
-        }
-
-        if ($html64) {
+        if ($url) {
+            $content = $url;
+        } elseif ($html) {
+            $content = $html;
+        } elseif ($html64) {
             $content = \base64_decode($html64);
+        } else {
+            return $this->respondWithDataAndStatusCode("Bad parameter. Need url or html parameter", 403);
         }
 
         /**
@@ -47,10 +47,10 @@ class Html2PdfAction extends ActionAbstract
             if ($url) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateUriToPdf($this->getContainer());
             }
-            if ($html) {
+            if ($html || $html64) {
                 $uc = new \App\UseCases\Html2Pdf\GenerateHtmlToPdf($this->getContainer());
             }
-            $result = $uc("$content", $options);
+            $result = $uc($content, $options);
         } catch (\Exception $ex) {
             throw new \Exception("Convert error, verify your source");
             die($ex->getMessage());
